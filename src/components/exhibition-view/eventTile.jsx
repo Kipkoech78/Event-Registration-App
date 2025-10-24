@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
+import Autoplay from "embla-carousel-autoplay"
+
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -29,7 +31,14 @@ function EventTile({ event, handleGeteventDetails }) {
   return (
     <Card className="w-full max-w-4xl mx-auto mb-6 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200">
       {/* Image Carousel */}
-      <Carousel className="relative w-full h-[300px]">
+      <Carousel
+      plugins={[
+        Autoplay({
+          delay: 2000,
+        }),
+      ]}
+
+       className="relative w-full h-[300px]">
         <CarouselContent>
           {images.map((img, index) => (
             <CarouselItem key={index}>
