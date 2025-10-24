@@ -36,24 +36,18 @@ export const registerUser = createAsyncThunk('auth/register',
         return response.data;
     }
 ) 
-export const checkAuth = createAsyncThunk('auth/check-auth',
-    async() =>{
-       // const token = localStorage.getItem('token');
-        console.log(token)
-        const response = await axios.get(`${baseURL}/api/auth/check-auth`,
-             {
-            withCredentials: true,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate ', 
-                Expires : '0'
-            }
-        });
-        console.log("response data", response.data)
-        return response.data;
-        
-    }
-)
+export const checkAuth = createAsyncThunk('auth/check-auth', async () => {
+    const response = await axios.get(`${baseURL}/api/check-auth`, {
+      withCredentials: true,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        Expires: '0',
+      },
+    });
+    console.log("response data", response.data);
+    return response.data;
+  });
+  
 
 
 
