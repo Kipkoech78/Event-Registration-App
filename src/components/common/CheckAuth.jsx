@@ -12,47 +12,30 @@ function CheckAuth({ isAuthenticated, user, children }) {
       <Navigate to='/exhibition/home' />
     }
   }
-  // Redirect unauthenticated users ONLY when they try to access protected pages
-  const protectedPaths = ["/exhibition/checkout", "/exhibition/accounts"];
-  if (
-    !isAuthenticated &&
-    protectedPaths.some((p) => location.pathname.startsWith(p))
-  ) {
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  
+  // Redirect unauthenticated users to login unless they're on the login or register page
+  if (!isAuthenticated && !(location.pathname.includes('/login') || location.pathname.includes('/register'))) {
+    return <Navigate to='/auth/login' />
   }
 
-  // Redirect authenticated users away from login/register
-  if (
-    isAuthenticated &&
-    (location.pathname.includes("/login") ||
-      location.pathname.includes("/register"))
-  ) {
-    return user?.role === "admin" ? (
-      <Navigate to="/admin/dashboard" />
-    ) : (
-      <Navigate to="/exhibition/home" />
-    );
+  // Redirect authenticated users away from login or register
+  if (isAuthenticated && (location.pathname.includes('/login') || location.pathname.includes('/register'))) {
+    return user?.role === 'admin' ? <Navigate to='/admin/dashboard' /> : <Navigate to='/exhibition/home' />
   }
 
-  //   // Prevent regular users from accessing admin routes
-  if (
-    isAuthenticated &&
-    user?.role !== "admin" &&
-    location.pathname.includes("/admin")
-  ) {
-    return <Navigate to="/unauth-page" />;
+  // Prevent regular users from accessing admin routes
+  if (isAuthenticated && user?.role !== 'admin' && location.pathname.includes('/admin')) {
+    return <Navigate to='/unauth-page' />
   }
 
   // Prevent admins from accessing exhibition routes
-  if (
-    isAuthenticated &&
-    user?.role === "admin" &&
-    location.pathname.includes("/exhibition")
-  ) {
-    return <Navigate to="/admin/dashboard" />;
+  if (isAuthenticated && user?.role === 'admin' && location.pathname.includes('/exhibition')) {
+    return <Navigate to='/admin/dashboard' />
   }
 
   return <>{children}</>;
 }
+
+
 
 export default CheckAuth;

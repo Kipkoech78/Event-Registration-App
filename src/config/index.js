@@ -106,3 +106,55 @@ export const registerFormControls = [
     required: true,
   },
 ];
+
+export const categoryOptionsMap = {
+  conference: "Conference",
+  exhibition: "Exhibition",
+
+};
+
+
+export const filterOptions = {
+  category: [
+    { id: "conference", label: "Conference" },
+    { id: "exhibition", label: "Exhibition" },
+
+  ],
+};
+
+export const sortOptions = [
+  { id: "price-lowtohigh", label: "Price: Low to High" },
+  { id: "price-hightolow", label: "Price: High to Low" },
+  { id: "title-atoz", label: "Title: A to Z" },
+  { id: "title-ztoa", label: "Title: Z to A" },
+];
+
+
+
+export const ExhibitionViewHeaderMenuItems = [
+  {
+    id: "home",
+    label: "Home",
+    path: "/exhibition/home",
+  },
+  {
+    id: "conference",
+    label: "Conference",
+    path: "/exhibition/listing",
+  },
+  // {
+  //   id: "events",
+  //   label: "Events",
+  //   path: "/exhibition/listing",
+  // },
+  {
+    id: "exhibition",
+    label: "Exhibition",
+    path: "/exhibition/listing",
+  },
+  {
+    id: "search",
+    label: "Search",
+    path: "/exhibition/search",
+  },
+];

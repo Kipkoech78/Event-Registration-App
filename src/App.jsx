@@ -16,6 +16,7 @@ import { checkAuth } from "./store/auth-slice";
 import { PageSkeleton } from "./components/common/Skeleton";
 import AdminEventsTile from "./components/admin-view/eventsTile";
 import AdminEvents from "./pages/admin-view/events";
+import EventListing from "./pages/exhibition-view/listing";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -73,8 +74,10 @@ function App() {
           }
         >
           <Route path="home" element={<ExhibitionHome />} />
+          <Route path="listing" element={<EventListing />} />
+          
         </Route>
-        <Route path="*" element={<ExhibitionHome />} />
+        <Route path="*" element={<p> No page recreate</p>} />
         <Route
           path="unauth-page"
           element={
