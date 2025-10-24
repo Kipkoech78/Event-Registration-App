@@ -1,22 +1,23 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { Button } from './components/ui/button'
-import ExhibitionHome from './pages/exhibition-view/ExhibitionHome';
-import AuthLayout from './components/auth/AuthLayout';
-import CheckAuth from './components/common/CheckAuth';
-import { Route, Routes } from 'react-router-dom';
-import AdminLayout from './components/admin-view/AdminLayout';
-import AdminDashboard from './pages/admin-view/AdminDashboard';
-import ExhibitionLayout from './components/exhibition-view/ExhibitionLayout';
-import AuthLogin from './pages/auth/AuthLogin';
-import AuthRegister from './pages/auth/AuthRegister';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkAuth } from './store/auth-slice';
-import { PageSkeleton } from './components/common/Skeleton';
+import { useEffect, useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import { Button } from "./components/ui/button";
+import ExhibitionHome from "./pages/exhibition-view/ExhibitionHome";
+import AuthLayout from "./components/auth/AuthLayout";
+import CheckAuth from "./components/common/CheckAuth";
+import { Route, Routes } from "react-router-dom";
+import AdminLayout from "./components/admin-view/AdminLayout";
+import AdminDashboard from "./pages/admin-view/AdminDashboard";
+import ExhibitionLayout from "./components/exhibition-view/ExhibitionLayout";
+import AuthLogin from "./pages/auth/AuthLogin";
+import AuthRegister from "./pages/auth/AuthRegister";
+import { useDispatch, useSelector } from "react-redux";
+import { checkAuth } from "./store/auth-slice";
+import { PageSkeleton } from "./components/common/Skeleton";
+import AdminEventsTile from "./components/admin-view/eventsTile";
+import AdminEvents from "./pages/admin-view/events";
 
 function App() {
-  
   const { isAuthenticated, user, isLoading } = useSelector(
     (state) => state.auth
   );
@@ -27,10 +28,7 @@ function App() {
     dispatch(checkAuth());
   }, [dispatch]);
   console.log("Check if loading", isLoading);
-  if (isLoading) return <PageSkeleton /> ;
-
-  // const isAuthenticated = false;
-  // const user = null;
+  if (isLoading) return <PageSkeleton />;
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
@@ -64,7 +62,7 @@ function App() {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />} />
-         
+          <Route path="events" element={<AdminEvents />} />
         </Route>
         <Route
           path="/exhibition"
@@ -75,7 +73,6 @@ function App() {
           }
         >
           <Route path="home" element={<ExhibitionHome />} />
-          
         </Route>
         <Route path="*" element={<ExhibitionHome />} />
         <Route
@@ -92,4 +89,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
