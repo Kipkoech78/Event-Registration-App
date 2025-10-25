@@ -1,6 +1,6 @@
 import { fetchEventDetailsById, fetchFilteredEvents } from '@/store/exhibition/event-slice';
 import { CloudLightning, ShirtIcon } from 'lucide-react';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -26,9 +26,6 @@ function ExhibitionHome() {
     sessionStorage.setItem("filters", JSON.stringify(currentFilters));
     navigate(`/exhibition/listing`);
   }
-
-
-
 
   useEffect(() => {
     dispatch(

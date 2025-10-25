@@ -17,8 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import EventTile from "@/components/exhibition-view/eventTile";
 import EventFilter from "@/components/exhibition-view/filter";
-import EventDetailsDialog from "@/components/exhibition-view/eventDetails";
-import { fetchFilteredEvents } from "@/store/exhibition/event-slice";
+import { fetchEventDetailsById, fetchFilteredEvents } from "@/store/exhibition/event-slice";
 function EventListing() {
   const dispatch = useDispatch();
   const { eventList, eventDetails } = useSelector(
@@ -27,7 +26,6 @@ function EventListing() {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [openDetDialogue, setOpenDetDialogue] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const categorySearchParams = searchParams.get("category");
@@ -86,16 +84,8 @@ function EventListing() {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, [categorySearchParams]);
-
-  function handleGeteventDetails(getCurentEventId) {
-    console.log(getCurentEventId);
-    dispatch(fetchProductsDetailsById(getCurentEventId));
-  }
-  //add to cart
-  useEffect(() => {
-    if (eventDetails !== null) setOpenDetDialogue(true);
-  }, [eventDetails]);
   console.log(eventList, "itemslisted");
+
   return (
     <div className="grid  sm: grid-cols-1 md:grid-cols-[200px_1fr]  gap-6 p-4 md:p-6 ">
       <EventFilter filters={filters} HandleFilter={HandleFilter} />
@@ -141,18 +131,13 @@ function EventListing() {
             ? eventList.map((Item) => (
                 <EventTile
                   key={Item.id}
-                  handleGeteventDetails={handleGeteventDetails}
                   event={Item}
+                  user ={user}
                 />
               ))
             : null}
         </div>
       </div>
-      <EventDetailsDialog
-        eventDetails={eventDetails}
-        open={openDetDialogue}
-        setOpen={setOpenDetDialogue}
-      />
     </div>
   );
 }

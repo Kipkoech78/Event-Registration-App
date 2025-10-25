@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
-import Autoplay from "embla-carousel-autoplay"
+import Autoplay from "embla-carousel-autoplay";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +12,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CalendarDays, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-function EventTile({ event, handleGeteventDetails }) {
+function EventTile({ event, user }) {
+  const navigate = useNavigate();
   const images =
     event?.venueImages && event.venueImages.length > 0
       ? event.venueImages
@@ -27,25 +29,26 @@ function EventTile({ event, handleGeteventDetails }) {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const isUpcoming = new Date(event.startDate) >= new Date();
 
   return (
-    <Card className="w-full max-w-4xl mx-auto mb-6 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200">
+    <Card className="w-full px-15 mx-auto mb-6 overflow-hidden shadow-md hover:shadow-lg transition-all duration-200">
       {/* Image Carousel */}
       <Carousel
-      plugins={[
-        Autoplay({
-          delay: 2000,
-        }),
-      ]}
-
-       className="relative w-full h-[300px]">
+        plugins={[
+          Autoplay({
+            delay: 2000,
+          }),
+        ]}
+        className="relative w-full h-[300px]"
+      >
         <CarouselContent>
           {images.map((img, index) => (
             <CarouselItem key={index}>
               <img
                 src={img}
                 alt={`Event ${index}`}
-                className="w-full h-[300px] object-cover"
+                className="w-full h-[300px] rounded-[5px] object-cover"
               />
             </CarouselItem>
           ))}
@@ -56,9 +59,18 @@ function EventTile({ event, handleGeteventDetails }) {
             <CarouselNext className="right-2 bg-black/50 text-white hover:bg-black/70" />
           </>
         )}
-        <Badge className="absolute top-2 left-2 bg-red-500 text-white">
-          {event?.type || "Event"}
-        </Badge>
+        <div>
+          <Badge className="absolute top-3 left-2 bg-red-500 text-white">
+            {event?.type || "Event"}
+          </Badge>
+          <Badge
+            className={`absolute top-3 right-3 ${
+              isUpcoming ? "bg-green-600" : "bg-gray-500"
+            }`}
+          >
+            {isUpcoming ? "Upcoming" : "Past"}
+          </Badge>
+        </div>
       </Carousel>
 
       {/* Event Info */}
@@ -85,11 +97,10 @@ function EventTile({ event, handleGeteventDetails }) {
           </p>
         )}
       </CardContent>
-
       {/* Footer */}
       <CardFooter className="p-4">
         <Button
-          onClick={() => handleGeteventDetails(event._id)}
+          onClick={() => navigate(`/exhibition/event/${event._id}`)}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white"
         >
           View Event

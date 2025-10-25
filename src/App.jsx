@@ -17,6 +17,9 @@ import { PageSkeleton } from "./components/common/Skeleton";
 import AdminEventsTile from "./components/admin-view/eventsTile";
 import AdminEvents from "./pages/admin-view/events";
 import EventListing from "./pages/exhibition-view/listing";
+import EventDetailsPage from "./components/exhibition-view/EventDetailsPage";
+import PaymentSuccess from "./components/exhibition-view/paymentSuccess";
+import PaypalReturnPage from "./pages/exhibition-view/PaypalReturn";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -75,6 +78,10 @@ function App() {
         >
           <Route path="home" element={<ExhibitionHome />} />
           <Route path="listing" element={<EventListing />} />
+          <Route path="event/:id" element={<EventDetailsPage />} />
+          <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path="payment-success" element={<PaymentSuccess />} />
+
           
         </Route>
         <Route path="*" element={<p> No page recreate</p>} />
