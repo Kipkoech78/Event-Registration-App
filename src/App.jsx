@@ -20,6 +20,7 @@ import EventListing from "./pages/exhibition-view/listing";
 import EventDetailsPage from "./components/exhibition-view/EventDetailsPage";
 import PaymentSuccess from "./components/exhibition-view/paymentSuccess";
 import PaypalReturnPage from "./pages/exhibition-view/PaypalReturn";
+import AccountsPage from "./pages/exhibition-view/AccountsPage";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -79,6 +80,7 @@ function App() {
           <Route path="home" element={<ExhibitionHome />} />
           <Route path="listing" element={<EventListing />} />
           <Route path="event/:id" element={<EventDetailsPage />} />
+          <Route path="accounts" element={<AccountsPage /> } />
           <Route path="paypal-return" element={<PaypalReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccess />} />
 

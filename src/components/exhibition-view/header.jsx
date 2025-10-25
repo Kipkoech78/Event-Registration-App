@@ -95,7 +95,7 @@ function HeaderRightContent() {
         <DropdownMenuContent side="right" className="w-55">
           <DropdownMenuLabel> Logged in as {username} </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/accounts")}>
+          <DropdownMenuItem onClick={() => navigate("/exhibition/accounts")}>
             <UserCog className="mr-2 w-6 h-6" /> Account
           </DropdownMenuItem>
           <DropdownMenuSeparator />

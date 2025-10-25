@@ -37,7 +37,7 @@ function ExhibitionHome() {
     dispatch(fetchEventDetailsById(getCurentProductId));
   }
   return (
-    <div>{eventList}</div>
+    <div> home page </div>
   )
 }
 

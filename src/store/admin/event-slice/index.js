@@ -5,9 +5,10 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   EventList: [],
+  summaryList:[]
 };
 export const addNewEvent = createAsyncThunk(
-  "/products/addNewEvent",
+  "/events/addNewEvent",
   async (formData) => {
     const result = await axios.post(`${baseURL}/api/event/add`, formData, {
       headers: {
@@ -18,14 +19,22 @@ export const addNewEvent = createAsyncThunk(
   }
 );
 export const fetchAllEvents = createAsyncThunk(
-  "/products/fetchAllEvents",
+  "/events/fetchAllEvents",
   async () => {
     const result = await axios.get(`${baseURL}/api/event/get-all`, {});
     return result?.data;
   }
 );
+export const fetchEventsSummary = createAsyncThunk(
+  "/events/fetchEventsSummary",
+  async () => {
+    const result = await axios.get(`${baseURL}/api/event/summary`, {});
+    return result?.data;
+  }
+);
+
 export const editEvents = createAsyncThunk(
-  "/products/editEvents",
+  "/events/editEvents",
   async ({ id, formData }) => {
     const result = await axios.put(`${baseURL}/api/event/edit/${id}`, formData, {
       headers: {
@@ -60,9 +69,21 @@ const AdminEventSlice = createSlice({
         state.isLoading = false;
         state.EventList = action.payload.data;
       })
-      .addCase(fetchAllEvents.rejected, (action, state) => {
+      .addCase(fetchAllEvents.rejected, (state, action) => {
         state.isLoading = false;
         state.EventList = [];
+      })
+      .addCase(fetchEventsSummary.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchEventsSummary.fulfilled, (state, action) => {
+        console.log(action.payload.data);
+        state.isLoading = false;
+        state.summaryList = action.payload.data;
+      })
+      .addCase(fetchEventsSummary.rejected, (action, state) => {
+        state.isLoading = false;
+        state.summaryList = [];
       });
   },
 });

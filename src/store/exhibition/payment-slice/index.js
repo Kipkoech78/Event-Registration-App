@@ -33,6 +33,18 @@ export const capturePayment = createAsyncThunk('order/capturePayment',
    return response.data
 })
 
+export const getEventOrderListbyUser = createAsyncThunk('event/getEventOrderListbyUser', async(userId)=>{
+    const response = await axios.get(`${baseURL}/api/event/user/${userId}`, );
+    return response.data
+    
+})
+
+export const getEventOrderDetails = createAsyncThunk('event/getEventOrderDetails', async(id)=>{
+    const response = await axios.get(`${baseURL}/api/event/user/${id}`, );
+    return response.data
+    
+})
+
 
 const eventOrderSlice = createSlice({
     name:"eventOrderSlice",
@@ -59,6 +71,19 @@ const eventOrderSlice = createSlice({
             state.isLoading = false;
             state.approvalURL = null;
             state.eventOrderId = null
+        })
+        .addCase(getEventOrderListbyUser.pending, (state)=>{
+            state.isLoading = true
+        })
+        .addCase(getEventOrderListbyUser.fulfilled, (state, action)=>{
+            state.isLoading = false;
+            state.payments = action.payload.data;
+            console.log("getEventOrderListbyUser data", action.payload)
+        })
+        .addCase(getEventOrderListbyUser.rejected, (state, action) =>{
+            state.isLoading = false;
+            state.payments =[];
+            console.log("getEventOrderListbyUser rejected", action.payload)
         })
     }
 })
