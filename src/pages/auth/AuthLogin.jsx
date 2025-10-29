@@ -17,8 +17,6 @@ const initialState = {
     const {isLoading } = useSelector((state)=> state.auth)
     const [formData, setFormData] = useState(initialState)
     const dispatch = useDispatch()
-   
-  
     function onSubmit(e) {
       e.preventDefault()
       dispatch(loginUser(formData)).then(data =>{
@@ -34,14 +32,12 @@ const initialState = {
           })
         }
       })
-      
     }
     if (isLoading) return <PageSkeleton /> ;
     return (
       <div className='mx-auto w-full max-w-md space-y-6' >
         <div className='text-center' >
           <h1 className='text-3xl font-bold tracking-tight text-foreground'> LogIn to Your Account</h1>
-          
         </div>
         <CommonForm formcontrols={LoginFormControls}
          buttonText={'Log In'} 
