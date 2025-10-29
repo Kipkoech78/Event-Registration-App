@@ -5,6 +5,7 @@ import { fetchEventDetailsById } from "@/store/exhibition/event-slice";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, MapPin, Plus, Minus } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -32,6 +33,8 @@ function EventDetailsPage() {
   const [openSheet, setOpenSheet] = useState(false);
   const [ticketCount, setTicketCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (id) dispatch(fetchEventDetailsById(id));
@@ -62,9 +65,20 @@ function EventDetailsPage() {
     hour: "2-digit",
     minute: "2-digit",
   });
+  //handle login redirects
+  function handleIsUserLoginFirst(){
+    if (!user) {
+      // Save the current path as a return URL
+      const currentPath = location.pathname;
+      navigate(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+    setOpenSheet(true)
+  }
 
   // handle registration (placeholder)
   const handleRegister = () => {
+    
     const bookingData = {
       eventId: eventDetails._id,
       eventTitle: eventDetails.title,
@@ -162,10 +176,10 @@ function EventDetailsPage() {
           <Button
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white w-full"
-            onClick={() => setOpenSheet(true)}
+            onClick={() => handleIsUserLoginFirst()}
             disabled ={isLoading}
           >
-            Buy Tickets
+            {user ? "Buy Tickets" : "Login to Buy Tickets"}
           </Button>
         </div>
       </div>
