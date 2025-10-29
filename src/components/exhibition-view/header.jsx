@@ -4,7 +4,6 @@ import {
   LogOut,
   Menu,
   Search,
-  ShoppingCart,
   UserCog,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -114,7 +113,7 @@ function ExhibitionHeader() {
   return (
     <header className="sticky top-0  w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to={"/shop/home"} className="flex gap-3 items-center ">
+        <Link to={"/exhibition/home"} className="flex gap-3 items-center ">
           <HousePlus className="h-6 w-6" />
           <span className="font-bold">Exhibition Registration </span>
         </Link>
