@@ -17,7 +17,8 @@ export const fetchFilteredEvents = createAsyncThunk(
             ...filterParams,
             sortBy : sortParams
         })
-        const result = await axios.get(`${baseURL}/api/events/fetch-filtered?${query}`, {
+        const result = await axios.get(`${baseURL}/api/events/fetch-filtered?${query}`,
+            {withCredentials:true},  {
         })
         return result?.data
 
@@ -26,7 +27,7 @@ export const fetchFilteredEvents = createAsyncThunk(
 export const fetchEventDetailsById = createAsyncThunk(
     "/exhibition/fetchEventDetailsById",
     async (id) =>{
-        const result = await axios.get(`${baseURL}/api/event/get-by-id/${id}`, {
+        const result = await axios.get(`${baseURL}/api/event/get-by-id/${id}`, {withCredentials:true
         })
         console.log(result)
         return result?.data

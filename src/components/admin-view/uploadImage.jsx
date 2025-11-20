@@ -18,7 +18,7 @@ function EventImageUpload({
   isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
-  console.log(isEditMode, "isEditMode");
+
 
   function handleImageFileChange(event) {
     const selectedFiles = event.target.files;

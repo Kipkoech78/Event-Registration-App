@@ -22,7 +22,6 @@ function AdminImageUpload({
     //const [uploadedImageUrl, setUploadedImageUrl] = useState("");
    // const [imageLoadingState, setImageLoadingState] = useState(false)
   
-    console.log(isEditMode, "isEditMode");
   
     function handleImageFileChange(event) {
       console.log(event.target.files, "event.target.files");

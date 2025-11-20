@@ -1,54 +1,83 @@
-import CommonForm from '@/components/common/form'
-import { PageSkeleton } from '@/components/common/Skeleton'
-import { LoginFormControls } from '@/config'
-import { loginUser } from '@/store/auth-slice'
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { toast } from 'sonner'
-
+import CommonForm from "@/components/common/form";
+import { PageSkeleton } from "@/components/common/Skeleton";
+import { LoginFormControls } from "@/config";
+import { loginUser } from "@/store/auth-slice";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const initialState = {
-    email: '',
-    password: '',
+  email: "",
+  password: "",
+};
+
+function AuthLogin() {
+  const { isLoading } = useSelector((state) => state.auth);
+  const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
+  function onSubmit(e) {
+    e.preventDefault();
+    dispatch(loginUser(formData)).then((data) => {
+      console.log(data);
+      if (data?.payload?.success) {
+        toast.success(data?.payload?.message, {
+          description: "success",
+        });
+      } else {
+        toast.error(data?.payload?.message, {
+          description: "Failure",
+        });
+      }
+    });
   }
-  
-  function AuthLogin() {
-    const {isLoading } = useSelector((state)=> state.auth)
-    const [formData, setFormData] = useState(initialState)
-    const dispatch = useDispatch()
-    function onSubmit(e) {
-      e.preventDefault()
-      dispatch(loginUser(formData)).then(data =>{
-        console.log(data)
-        if(data?.payload?.success){
-          toast.success(data?.payload?.message,{
-            description: "success"
-          })
-        }
-        else{
-          toast.error(data?.payload?.message,{
-            description: "Failure"
-          })
-        }
-      })
-    }
-    if (isLoading) return <PageSkeleton /> ;
-    return (
-      <div className='mx-auto w-full max-w-md space-y-6' >
-        <div className='text-center' >
-          <h1 className='text-3xl font-bold tracking-tight text-foreground'> LogIn to Your Account</h1>
-        </div>
-        <CommonForm formcontrols={LoginFormControls}
-         buttonText={'Log In'} 
-         onSubmit={onSubmit}
-        formData={formData} setFormData={setFormData} />
-  
-  <p className='mt-2'> Dont Have an account ? 
-          <Link to='/auth/register' className='ml-2 text-primary font-medium hover: underline'> Register</Link>
-          </p>
+  //google signIn
+  function handleGoogleSignIn() {
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    // setGoogleAuthRedirect()
+  }
+  if (isLoading) return <PageSkeleton />;
+  return (
+    <div className="mx-auto w-full max-w-md space-y-6">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          {" "}
+          LogIn to Your Account
+        </h1>
       </div>
-    )
-  }
-  
-  export default AuthLogin
+      <CommonForm
+        formcontrols={LoginFormControls}
+        buttonText={"Log In"}
+        onSubmit={onSubmit}
+        formData={formData}
+        setFormData={setFormData}
+      />
+      <button
+        onClick={handleGoogleSignIn}
+        className="flex items-center justify-center gap-2 w-full p-3 border rounded-xl hover:bg-gray-100 transition"
+      >
+        <img
+          src="https://www.svgrepo.com/show/355037/google.svg"
+          alt="Google"
+          className="w-5 h-5"
+        />
+        <span className="text-sm font-semibold text-gray-700">
+          Sign in with Google
+        </span>
+      </button>
+      <p className="mt-2">
+        {" "}
+        Dont Have an account ?
+        <Link
+          to="/auth/register"
+          className="ml-2 text-primary font-medium hover: underline"
+        >
+          {" "}
+          Register
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+export default AuthLogin;

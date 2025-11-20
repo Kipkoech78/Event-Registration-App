@@ -35,13 +35,11 @@ export const registerUser = createAsyncThunk(
     return response.data;
   }
 );
+//google auth
+
 export const checkAuth = createAsyncThunk("auth/check-auth", async () => {
   const response = await axios.get(`${baseURL}/api/check-auth`, {
     withCredentials: true,
-    headers: {
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-      Expires: "0",
-    },
   });
   console.log("response data", response.data);
   return response.data;
@@ -77,10 +75,9 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         console.log("checkout fullfilled message", action.payload.user);
-
         state.isLoading = false;
         state.isAuthenticated = action.payload.success;
-        state.user = action.payload.success ? action.payload.user : null;
+        state.user = action.payload.success ? action.payload.data : null;
       })
       .addCase(checkAuth.rejected, (state, action) => {
         console.log("action rejected", action);

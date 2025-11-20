@@ -6,6 +6,7 @@ function CheckAuth({ isAuthenticated, user, children }) {
   const path = location.pathname;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate()
+  console.log("check auth role", user?.role)
 
   // Define public routes guests can access
   const publicRoutes = [

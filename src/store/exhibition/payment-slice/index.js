@@ -12,12 +12,13 @@ const initialState = {
 };
 
 
-
 export const createEventPayment = createAsyncThunk(
     "payment/createEventPayment",
     async (bookingData, {rejectWithValue}) =>{
         try{
-            const response = await axios.post(`${baseURL}/api/event/create`,bookingData )
+            const response = await axios.post(`${baseURL}/api/event/create`,bookingData,
+                {withCredentials:true}
+             )
             return response.data
         }catch(e){
             return rejectWithValue(e.response?.data || e.message)
@@ -27,20 +28,20 @@ export const createEventPayment = createAsyncThunk(
 export const capturePayment = createAsyncThunk('order/capturePayment',
     async({paymentId, payerId, orderId})=>{
    const response = 
-   await axios.post(`${baseURL}/api/event/capture`,{
+   await axios.post(`${baseURL}/api/event/capture`, {
        paymentId, payerId, orderId
-   } );
+   }, {withCredentials:true} );
    return response.data
 })
 
 export const getEventOrderListbyUser = createAsyncThunk('event/getEventOrderListbyUser', async(userId)=>{
-    const response = await axios.get(`${baseURL}/api/event/user/${userId}`, );
+    const response = await axios.get(`${baseURL}/api/event/user/${userId}`, {withCredentials:true} );
     return response.data
     
 })
 
 export const getEventOrderDetails = createAsyncThunk('event/getEventOrderDetails', async(id)=>{
-    const response = await axios.get(`${baseURL}/api/event/user/${id}`, );
+    const response = await axios.get(`${baseURL}/api/event/user/${id}`, {withCredentials:true} );
     return response.data
     
 })

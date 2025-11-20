@@ -10,7 +10,7 @@ const initialState = {
 export const addNewEvent = createAsyncThunk(
   "/events/addNewEvent",
   async (formData) => {
-    const result = await axios.post(`${baseURL}/api/event/add`, formData, {
+    const result = await axios.post(`${baseURL}/api/event/add`, formData,{withCredentials:true}, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -21,14 +21,16 @@ export const addNewEvent = createAsyncThunk(
 export const fetchAllEvents = createAsyncThunk(
   "/events/fetchAllEvents",
   async () => {
-    const result = await axios.get(`${baseURL}/api/event/get-all`, {});
+    const result = await axios.get(`${baseURL}/api/event/get-all`,
+      {withCredentials:true});
     return result?.data;
   }
 );
 export const fetchEventsSummary = createAsyncThunk(
   "/events/fetchEventsSummary",
   async () => {
-    const result = await axios.get(`${baseURL}/api/event/summary`, {});
+    const result = await axios.get(`${baseURL}/api/event/summary`, {}, 
+      {withCredentials:true});
     return result?.data;
   }
 );
@@ -36,7 +38,7 @@ export const fetchEventsSummary = createAsyncThunk(
 export const editEvents = createAsyncThunk(
   "/events/editEvents",
   async ({ id, formData }) => {
-    const result = await axios.put(`${baseURL}/api/event/edit/${id}`, formData, {
+    const result = await axios.put(`${baseURL}/api/event/edit/${id}`, formData,  {withCredentials:true}, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -47,7 +49,7 @@ export const editEvents = createAsyncThunk(
 export const deleteEvents = createAsyncThunk(
   "/products/deleteEvents",
   async (id) => {
-    const result = await axios.delete(`${baseURL}/api/event/delete/${id}`, {
+    const result = await axios.delete(`${baseURL}/api/event/delete/${id}`,  {withCredentials:true},{
       headers: {
         "Content-Type": "application/json",
       },
