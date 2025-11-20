@@ -46,7 +46,8 @@ function EventImageUpload({
       setImageLoadingState(true);
       const data = new FormData();
       data.append("my_file", file);
-      const response = await axios.post(`${baseURL}/api/upload-image`, data, {
+      const response = await axios.post(`${baseURL}/api/upload-image`, data, {withCredentials: true,},
+        {
         headers: {
           "Content-Type": "multipart/form-data",
         },

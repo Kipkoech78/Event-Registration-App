@@ -53,7 +53,8 @@ function AdminImageUpload({
       data.append("my_file", bannerImageFile);
       const response = await axios.post(
         `${baseURL}/api/upload-image`,
-        data
+        data,
+        {withCredentials: true,}
       );
       console.log(response, "response banner Image");
   

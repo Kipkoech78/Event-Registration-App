@@ -29,7 +29,7 @@ export const fetchAllEvents = createAsyncThunk(
 export const fetchEventsSummary = createAsyncThunk(
   "/events/fetchEventsSummary",
   async () => {
-    const result = await axios.get(`${baseURL}/api/event/summary`, {}, 
+    const result = await axios.get(`${baseURL}/api/event/summary`, 
       {withCredentials:true});
     return result?.data;
   }
