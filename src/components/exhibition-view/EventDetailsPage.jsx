@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEventDetailsById } from "@/store/exhibition/event-slice";
+import {
+  createEventPayment,
+  CreateMpesaPayment,
+} from "@/store/exhibition/payment-slice";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, MapPin, Plus, Minus } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { CalendarDays, MapPin } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -19,94 +22,159 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
-import { createEventPayment } from "@/store/exhibition/payment-slice";
 import { toast } from "sonner";
+import CommonForm from "../common/form";
+import { RegisterEventFormControl } from "@/config";
+
+const initialState = {
+  amount: 0,
+  email: "",
+  fname: "",
+  lname: "",
+  company: "",
+  number: "",
+  position: "",
+  type: "",
+};
 
 function EventDetailsPage() {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { eventDetails } = useSelector((state) => state.exhibitionEvent);
-  const { user } = useSelector((state) => state.auth); 
-  const {isLoading,approvalURL,payments,eventOrderId,EventOrderDetails} = useSelector((state)=> state.payment)
-
+  const [formData, setFormData] = useState(initialState);
   const [openSheet, setOpenSheet] = useState(false);
   const [ticketCount, setTicketCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [isCapacityFull, setCapacityFull] = useState(false);
+
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const { eventDetails } = useSelector((state) => state.exhibitionEvent);
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.payment);
+
+  // Fetch event details
   useEffect(() => {
     if (id) dispatch(fetchEventDetailsById(id));
   }, [id, dispatch]);
 
+  // Update total price when ticket count or event changes
   useEffect(() => {
     if (eventDetails?.price) {
       setTotalPrice(eventDetails.price * ticketCount);
     }
   }, [ticketCount, eventDetails]);
 
-  if (!eventDetails)
+  // Always update formData amount
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, amount: totalPrice }));
+  }, [totalPrice]);
+  useEffect(() => {
+    if (eventDetails?.capacity <= 0) {
+      setCapacityFull(true);
+    } else {
+      setCapacityFull(false);
+    }
+  }, [eventDetails]);
+
+  // Form validation
+  function validateForm(data) {
+    const { email, fname, lname, number } = data;
+    if (!fname.trim() || !lname.trim() || !email.trim() || !number.trim()) {
+      return "All fields are required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    const phoneRegex = /^[0-9]{9,12}$/;
+    const formattedPhone = number.startsWith("0") ? number.slice(1) : number;
+    if (!phoneRegex.test(formattedPhone)) return "Invalid phone number";
+    return null;
+  }
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const validationError = validateForm(formData);
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    if (totalPrice === 0) {
+      // Free event
+      const bookingData = {
+        eventId: eventDetails._id,
+        eventTitle: eventDetails.title,
+        userId: user?.id || null,
+        userName: user?.userName || "Guest User",
+        userEmail: formData.email,
+        tickets: 1,
+        totalPrice: 0,
+        paymentDate: new Date(),
+        paymentMethod: "FREE",
+      };
+      dispatch(createEventPayment(bookingData)).then((res) => {
+        if (res?.payload?.success) {
+          toast.success("Successfully registered for free!");
+          setOpenSheet(false);
+        } else {
+          toast.error("Registration failed");
+        }
+      });
+      return;
+    }
+
+    // Paid event
+    dispatch(
+      CreateMpesaPayment({
+        ...formData,
+        amount: totalPrice,
+        eventId: eventDetails._id,
+        eventTitle: eventDetails.title,
+      })
+    ).then(async (data) => {
+      if (data?.payload?.success) {
+        toast(data.payload.message || "STK sent success check your Phone");
+
+        //wait 2.5 seconds before closing sheet
+        await delay(2500);
+
+        setOpenSheet(false);
+      } else {
+        toast.error(data?.payload?.message || "Payment failed");
+
+        //optional: also delay on failure
+        await delay(2500);
+      }
+    });
+  };
+
+  // Always render, use conditional inside JSX
+  if (!eventDetails) {
     return (
       <div className="flex items-center justify-center h-[80vh] text-lg text-gray-500">
         Loading event details...
       </div>
     );
+  }
+
   const images =
     eventDetails?.venueImages?.length > 0
       ? eventDetails.venueImages
       : [eventDetails.bannerImage || "/placeholder.jpg"];
 
-  const formattedDate = new Date(eventDetails.startDate).toLocaleString("en-GB", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  //handle login redirects
-  function handleIsUserLoginFirst(){
-    if (!user) {
-      // Save the current path as a return URL
-      const currentPath = location.pathname;
-      navigate(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
-      return;
+  const formattedDate = new Date(eventDetails.startDate).toLocaleString(
+    "en-GB",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }
-    setOpenSheet(true)
-  }
-
-  // handle registration (placeholder)
-  const handleRegister = () => {
-    
-    const bookingData = {
-      eventId: eventDetails._id,
-      eventTitle: eventDetails.title,
-      userId: user.id,
-      userName: user?.userName || "Guest User",
-      userEmail: user?.email || "guest@example.com",
-      tickets: ticketCount,
-      totalPrice,
-      paymentDate: new Date()
-    };
-    dispatch(createEventPayment(bookingData)).then((data)=>{
-      console.log(data)
-      if(data?.payload?.success){
-        toast("payment request sent")
-        setOpenSheet(false)
-      }else{
-        toast("error occured requesting payment")
-      }
-    })
-    if(approvalURL){
-      window.location.href = approvalURL
-    }
-
-    console.log("Submitting booking:", bookingData);
-    
-   
-  };
-
+  );
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -157,7 +225,6 @@ function EventDetailsPage() {
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {eventDetails.description}
           </p>
-
           <div className="text-2xl font-semibold mt-6">
             🎟️ Ticket Price:{" "}
             <span className="text-blue-600">Ksh {eventDetails.price}</span>
@@ -172,62 +239,59 @@ function EventDetailsPage() {
               Don’t miss this amazing event! Reserve your spot now.
             </p>
           </div>
-
           <Button
             size="lg"
             className="bg-blue-600 hover:bg-blue-700 text-white w-full"
-            onClick={() => handleIsUserLoginFirst()}
-            disabled ={isLoading}
+            onClick={() => setOpenSheet(true)}
+            disabled={isCapacityFull}
           >
-            {user ? "Buy Tickets" : "Login to Buy Tickets"}
+            {eventDetails.price === 0 ? "Register for Free" : "Buy Ticket(s)"}
           </Button>
         </div>
       </div>
 
       {/* Sheet for Ticket Purchase */}
       <Sheet open={openSheet} onOpenChange={setOpenSheet}>
-        <SheetContent side="right" className="w-[400px] sm:w-[450px] overflow-y-auto">
+        <SheetContent
+          side="right"
+          className="w-[400px] sm:w-[450px] overflow-y-auto"
+        >
           <SheetHeader>
-            <SheetTitle>Buy Tickets for {eventDetails.title}</SheetTitle>
+            <SheetTitle>
+              {eventDetails.price === 0
+                ? "Register for Free"
+                : `Buy Tickets for ${eventDetails.title}`}
+            </SheetTitle>
           </SheetHeader>
+          {isCapacityFull && (
+            <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
+              This event is fully booked. Payments are disabled.
+            </div>
+          )}
+          {isLoading && (
+            <p className="text-sm text-gray-500 mt-2">
+              Sending STK prompt to your phone…
+            </p>
+          )}
 
           <div className="mt-6 space-y-6">
-            {/* User Info */}
-            <div>
-              <p className="text-sm text-gray-500">User</p>
-              <Input value={user?.userName || "Guest User"} disabled className="mb-2" />
-              <Input value={user?.email || "guest@example.com"} disabled />
-            </div>
+            <CommonForm
+              formcontrols={RegisterEventFormControl}
+              buttonText={
+                eventDetails.price === 0
+                  ? "Register for Free"
+                  : "Buy Ticket to Register"
+              }
+              onSubmit={handleRegister}
+              formData={formData}
+              isBtnDisabled={isLoading || isCapacityFull}
+              setFormData={setFormData}
+            />
 
-            {/* Ticket Counter */}
-            <div>
-              <p className="text-sm text-gray-500 mb-2">Number of Tickets</p>
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setTicketCount((prev) => Math.max(1, prev - 1))}
-                >
-                  <Minus />
-                </Button>
-                <span className="text-lg font-semibold">{ticketCount}</span>
-                <Button variant="outline" onClick={() => setTicketCount((prev) => prev + 1)}>
-                  <Plus />
-                </Button>
-              </div>
-            </div>
-
-            {/* Total Price */}
             <div className="mt-4 text-lg font-semibold">
-              Total Price: <span className="text-blue-600">Ksh {totalPrice}</span>
+              Total Price:{" "}
+              <span className="text-blue-600">Ksh {totalPrice}</span>
             </div>
-
-            {/* Submit */}
-            <Button
-              className="bg-green-600 hover:bg-green-700 text-white w-full mt-6"
-              onClick={handleRegister}
-            >
-              {isLoading ? "Processing payments..." :"Confirm Purchase"}
-            </Button>
           </div>
         </SheetContent>
       </Sheet>

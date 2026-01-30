@@ -7,6 +7,7 @@ const initialState = {
   isLoading: false,
   approvalURL: null,
   payments: [],
+  mpesaData:[],
   eventOrderId: null,
   EventOrderDetails:null
 };
@@ -23,6 +24,14 @@ export const createEventPayment = createAsyncThunk(
         }catch(e){
             return rejectWithValue(e.response?.data || e.message)
         }   
+    }
+)
+export const CreateMpesaPayment = createAsyncThunk(
+    "payment/CreateMpesaPayment",
+    async (formData) =>{
+        const response = await axios.post(`${baseURL}/stkpush`,formData,{withCredentials:true});
+        console.log(response,"response from mpesa")
+        return response.data
     }
 )
 export const capturePayment = createAsyncThunk('order/capturePayment',
@@ -72,6 +81,20 @@ const eventOrderSlice = createSlice({
             state.isLoading = false;
             state.approvalURL = null;
             state.eventOrderId = null
+        })
+        //payment addcases
+        .addCase(CreateMpesaPayment.pending, (state)=>{
+            state.isLoading= true
+        })
+        .addCase(CreateMpesaPayment.fulfilled, (state, action)=>{
+            state.isLoading = false;
+            state.mpesaData = action.payload.data;
+            console.log(action.payload,"data from mpesa in addcase")
+        })
+        .addCase(CreateMpesaPayment.rejected, (state, action)=>{
+            state.isLoading= false;
+            state.mpesaData =[];
+            console.log(action.payload, "mpesa rejected")
         })
         .addCase(getEventOrderListbyUser.pending, (state)=>{
             state.isLoading = true

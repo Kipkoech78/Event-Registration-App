@@ -1,12 +1,19 @@
 import React from "react";
-import { Navigate,useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  useSearchParams,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
   const path = location.pathname;
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate()
-  console.log("check auth role", user?.role)
+  const navigate = useNavigate();
+
+  console.log("check auth role", user?.role);
+  user?.role == "admin";
 
   // Define public routes guests can access
   const publicRoutes = [
@@ -54,7 +61,11 @@ function CheckAuth({ isAuthenticated, user, children }) {
   }
 
   //  Prevent admins from accessing exhibition user routes
-  if (isAuthenticated && user?.role === "admin" && path.startsWith("/exhibition")) {
+  if (
+    isAuthenticated &&
+    user?.role === "admin" &&
+    path.startsWith("/exhibition")
+  ) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
@@ -62,10 +73,6 @@ function CheckAuth({ isAuthenticated, user, children }) {
 }
 
 export default CheckAuth;
-
-
-
-
 
 // import React from "react";
 // import { Navigate, useLocation } from "react-router-dom";
@@ -77,11 +84,11 @@ export default CheckAuth;
 //     if(!isAuthenticated){
 //       return <Navigate to='/auth/login' />
 //     }else{
-//      return user?.role === 'admin' ?  <Navigate to='/admin/dashboard' /> : 
+//      return user?.role === 'admin' ?  <Navigate to='/admin/dashboard' /> :
 //       <Navigate to='/exhibition/home' />
 //     }
 //   }
-  
+
 //   // Redirect unauthenticated users to login unless they're on the login or register page
 //   if (!isAuthenticated && !(location.pathname.includes('/login') || location.pathname.includes('/register'))) {
 //     return <Navigate to='/auth/login' />
@@ -104,7 +111,5 @@ export default CheckAuth;
 
 //   return <>{children}</>;
 // }
-
-
 
 // export default CheckAuth;

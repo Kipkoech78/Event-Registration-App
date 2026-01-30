@@ -21,6 +21,7 @@ import EventDetailsPage from "./components/exhibition-view/EventDetailsPage";
 import PaymentSuccess from "./components/exhibition-view/paymentSuccess";
 import PaypalReturnPage from "./pages/exhibition-view/PaypalReturn";
 import AccountsPage from "./pages/exhibition-view/AccountsPage";
+import AdminOrders from "./pages/admin-view/orders";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useSelector(
@@ -68,6 +69,7 @@ function App() {
         >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="events" element={<AdminEvents />} />
+          <Route path="orders" element = {<AdminOrders /> } />
         </Route>
         <Route
           path="/exhibition"
@@ -80,11 +82,9 @@ function App() {
           <Route path="home" element={<ExhibitionHome />} />
           <Route path="listing" element={<EventListing />} />
           <Route path="event/:id" element={<EventDetailsPage />} />
-          <Route path="accounts" element={<AccountsPage /> } />
+          <Route path="accounts" element={<AccountsPage />} />
           <Route path="paypal-return" element={<PaypalReturnPage />} />
           <Route path="payment-success" element={<PaymentSuccess />} />
-
-          
         </Route>
         <Route path="*" element={<p> No page recreate</p>} />
         <Route
@@ -92,7 +92,7 @@ function App() {
           element={
             <p>
               Not authenticated .. later Linus create file to render the page
-              now is just a p tag element{" "}
+              now is just a p tag element
             </p>
           }
         />

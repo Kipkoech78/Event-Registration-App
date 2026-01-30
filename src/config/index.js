@@ -14,7 +14,63 @@ export const LoginFormControls = [
     required: true,
   },
 ];
+export const RegisterEventFormControl = [
 
+  {
+    label: "First name",
+    name: "fname",
+    type: "text",
+    placeholder: "John",
+    required: true,
+  },
+  {
+    label: "Last name",
+    name: "lname",
+    type: "text",
+    placeholder: "Doe",
+    required: true,
+  },
+  {
+    label: "Email",
+    name: "email",
+    type: "email",
+    placeholder: "Enter your email",
+    required: true,
+  },
+  {
+    label: "Phone number",
+    name: "number",
+    type: "number",
+    placeholder: "Active phone number to receive STK push",
+    required: true,
+  },
+  {
+    label: "Company",
+    name: "company",
+    type: "text",
+    placeholder: "Safaricom",
+    required: true,
+  },
+  {
+    label: "Position",
+    name: "position",
+    type: "text",
+    placeholder: "Technical lead",
+    required: true,
+  },
+  {
+    label: "Attendee Type",
+    name: "type",
+    componentType: "select",
+    options: [
+      { label: "Delegate", id: "delegate" },
+      { label: "Speaker", id: "speaker" },
+      { label: "Exhibitor", id: "exhibitor" },
+      { label: "Staff", id: "staff" },
+    ],
+    required: true,
+  },
+];
 
 export const eventFormControls = [
   {
@@ -29,9 +85,12 @@ export const eventFormControls = [
     name: "type",
     componentType: "select",
     options: [
-      { label: "Exhibition", id: "exhibition" },
-      { label: "Conference", id: "conference" },
-      // Optional: Add more event types if needed
+      { label: "Social", id: "social" },
+      { label: "Corporate", id: "corporate" },
+      { label: "Educational", id: "educational" },
+      { label: "Cultural and Entertainment", id: "culturalAndEntertainment" },
+      { label: "Sports", id: "sports" },
+      { label: "Religious", id: "religious" },
     ],
     required: true,
   },
@@ -111,15 +170,12 @@ export const registerFormControls = [
 export const categoryOptionsMap = {
   conference: "Conference",
   exhibition: "Exhibition",
-
 };
-
 
 export const filterOptions = {
   category: [
     { id: "conference", label: "Conference" },
     { id: "exhibition", label: "Exhibition" },
-
   ],
 };
 
@@ -131,8 +187,6 @@ export const sortOptions = [
   { id: "date-newest", label: "Newest First" },
   { id: "date-oldest", label: "Oldest First" },
 ];
-
-
 
 export const ExhibitionViewHeaderMenuItems = [
   {

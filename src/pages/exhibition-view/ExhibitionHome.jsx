@@ -50,7 +50,7 @@ function ExhibitionHome() {
       </section>
 
       {/* category */}
-      <section className="py-14 px-6 md:px-12 bg-background">
+      {/* <section className="py-14 px-6 md:px-12 bg-background">
         <h2 className="text-2xl font-bold text-center mb-8">Browse by Category</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 justify-items-center">
           {categoryWithIcon.map((item) => {
@@ -69,7 +69,7 @@ function ExhibitionHome() {
             );
           })}
         </div>
-      </section>
+      </section> */}
 
       {/* featured events */}
       <section className="py-16 px-6 md:px-12 bg-gray-50">

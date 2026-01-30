@@ -39,7 +39,7 @@ function AdminDashboard() {
         <Card className="bg-blue-50 shadow-lg rounded-2xl">
           <CardContent className="p-6">
             <h2 className="text-sm text-gray-500">Total Revenue</h2>
-            <p className="text-3xl font-semibold text-blue-600 mt-2">Ksh {(totalRevenue*128).toFixed(2)}</p>
+            <p className="text-3xl font-semibold text-blue-600 mt-2">$ {(totalRevenue*128).toFixed(2)}</p>
           </CardContent>
         </Card>
 
@@ -113,7 +113,7 @@ function AdminDashboard() {
                 <tr className="bg-gray-100 text-left text-sm text-gray-700">
                   <th className="p-3">Event Title</th>
                   <th className="p-3">Tickets Sold</th>
-                  <th className="p-3">Revenue (Ksh)</th>
+                  <th className="p-3">Revenue ($)</th>
                   <th className="p-3">Attendees</th>
                 </tr>
               </thead>

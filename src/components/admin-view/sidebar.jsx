@@ -36,7 +36,7 @@ const adminSidebarMenuItems = [
   {
     id: "orders",
     label: "Payments",
-    path: "/admin/attendees",
+    path: "/admin/orders",
     icon: <ListOrdered />,
   },
 ];
