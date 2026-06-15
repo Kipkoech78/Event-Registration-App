@@ -1,104 +1,74 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import { Button } from "./components/ui/button";
-import ExhibitionHome from "./pages/exhibition-view/ExhibitionHome";
-import AuthLayout from "./components/auth/AuthLayout";
-import CheckAuth from "./components/common/CheckAuth";
-import { Route, Routes } from "react-router-dom";
-import AdminLayout from "./components/admin-view/AdminLayout";
-import AdminDashboard from "./pages/admin-view/AdminDashboard";
-import ExhibitionLayout from "./components/exhibition-view/ExhibitionLayout";
-import AuthLogin from "./pages/auth/AuthLogin";
-import AuthRegister from "./pages/auth/AuthRegister";
-import { useDispatch, useSelector } from "react-redux";
-import { checkAuth } from "./store/auth-slice";
-import { PageSkeleton } from "./components/common/Skeleton";
-import AdminEventsTile from "./components/admin-view/eventsTile";
-import AdminEvents from "./pages/admin-view/events";
-import EventListing from "./pages/exhibition-view/listing";
-import EventDetailsPage from "./components/exhibition-view/EventDetailsPage";
-import PaymentSuccess from "./components/exhibition-view/paymentSuccess";
-import PaypalReturnPage from "./pages/exhibition-view/PaypalReturn";
-import AccountsPage from "./pages/exhibition-view/AccountsPage";
-import AdminOrders from "./pages/admin-view/orders";
+import { useState } from "react";
+import SurveyManagement from "./pages/SurveyManagement";
+import QuestionManagement from "./pages/QuestionManagement";
+import SurveyResponses from "./pages/SurveyResponse";
+import AvailableSurveys from "./pages/AvailableSurveys";
+import Sidebar from "./components/sidebar";
+import SurveyForm from "./pages/SurveyForm";
+// import SurveyManagement from "./pages/SurveyManagement";
+// import QuestionManagement from "./pages/QuestionManagement";
+// import AvailableSurveys from "./pages/AvailableSurveys";
+// import SurveyForm from "./pages/SurveyForm";
+// import SurveyResponses from "./pages/SurveyResponses";
+// import Sidebar from "./components/Sidebar";
 
-function App() {
-  const { isAuthenticated, user, isLoading } = useSelector(
-    (state) => state.auth
-  );
-  console.log("user info", user);
-  console.log("Authentication", isAuthenticated);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(checkAuth());
-  }, [dispatch]);
-  console.log("Check if loading", isLoading);
-  if (isLoading) return <PageSkeleton />;
+export default function App() {
+  const [page, setPage] = useState("surveys");
+  const [selectedSurvey, setSelectedSurvey] = useState(null);
+  const [mode, setMode] = useState("admin"); // "admin" | "user"
+
+  const navigate = (p, survey = null) => {
+    setSelectedSurvey(survey);
+    setPage(p);
+  };
+
   return (
-    <div className="flex flex-col overflow-hidden bg-white">
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ExhibitionHome />
-            // <CheckAuth
-            //   isAuthenticated={isAuthenticated}
-            //   user={user}
-            // ></CheckAuth>
-          }
-        />
-        <Route
-          path="/auth"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AuthLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="login" element={<AuthLogin />} />
-          <Route path="register" element={<AuthRegister />} />
-        </Route>
-        <Route
-          path="/admin"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AdminLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="events" element={<AdminEvents />} />
-          <Route path="orders" element = {<AdminOrders /> } />
-        </Route>
-        <Route
-          path="/exhibition"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <ExhibitionLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="home" element={<ExhibitionHome />} />
-          <Route path="listing" element={<EventListing />} />
-          <Route path="event/:id" element={<EventDetailsPage />} />
-          <Route path="accounts" element={<AccountsPage />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
-          <Route path="payment-success" element={<PaymentSuccess />} />
-        </Route>
-        <Route path="*" element={<p> No page recreate</p>} />
-        <Route
-          path="unauth-page"
-          element={
-            <p>
-              Not authenticated .. later Linus create file to render the page
-              now is just a p tag element
-            </p>
-          }
-        />
-      </Routes>
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      {/* Top bar */}
+      <header className="bg-[#0F1B2D] text-white px-6 py-3 flex items-center justify-between shadow-lg z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center font-bold text-sm">SW</div>
+          <span className="font-semibold text-lg tracking-tight">Sky World Surveys</span>
+        </div>
+        <div className="flex gap-1 bg-white/10 rounded-lg p-1">
+          <button
+            onClick={() => { setMode("admin"); navigate("surveys"); }}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mode === "admin" ? "bg-white text-[#0F1B2D]" : "text-white/70 hover:text-white"}`}
+          >
+            Admin
+          </button>
+          <button
+            onClick={() => { setMode("user"); navigate("available"); }}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${mode === "user" ? "bg-white text-[#0F1B2D]" : "text-white/70 hover:text-white"}`}
+          >
+            Respondent
+          </button>
+        </div>
+      </header>
+
+      <div className="flex flex-1">
+        {mode === "admin" && (
+          <Sidebar page={page} navigate={navigate} selectedSurvey={selectedSurvey} />
+        )}
+
+        <main className={`flex-1 ${mode === "admin" ? "ml-0" : ""}`}>
+          {page === "surveys" && mode === "admin" && (
+            <SurveyManagement navigate={navigate} />
+          )}
+          {page === "questions" && mode === "admin" && (
+            <QuestionManagement survey={selectedSurvey} navigate={navigate} />
+          )}
+          {page === "responses" && mode === "admin" && (
+            <SurveyResponses survey={selectedSurvey} navigate={navigate} />
+          )}
+          {page === "available" && mode === "user" && (
+            <AvailableSurveys navigate={navigate} />
+          )}
+          {page === "form" && mode === "user" && (
+            <SurveyForm survey={selectedSurvey} navigate={navigate} />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
-
-export default App;
